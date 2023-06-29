@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import egsys.pokedex.ui.screens.appArea.Details
-import egsys.pokedex.ui.screens.appArea.Home
+import egsys.pokedex.ui.screens.appArea.details.Details
+import egsys.pokedex.ui.screens.appArea.home.Home
 import egsys.pokedex.ui.screens.apresentation.Splash
 
 @Composable
@@ -21,7 +21,7 @@ fun Presentation(){
 fun NavHostMainContent(){
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "home"){
-        composable("home"){ Home(navController)}
+        composable("home"){ Home(navController) }
         composable("details"){ Details(navController) }
     }
 }

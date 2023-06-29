@@ -1,10 +1,10 @@
-package egsys.pokedex.ui.screens.appArea
+package egsys.pokedex.ui.screens.appArea.details
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 
 @Composable
-fun Home(navController: NavController) {
+fun Details(navController: NavController) {
 
 }
