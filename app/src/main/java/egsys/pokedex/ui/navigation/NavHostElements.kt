@@ -9,19 +9,19 @@ import egsys.pokedex.ui.screens.appArea.home.Home
 import egsys.pokedex.ui.screens.apresentation.Splash
 
 @Composable
-fun Presentation(){
+fun Presentation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "splash"){
-        composable("splash") { Splash(navController = navController)}
+    NavHost(navController = navController, startDestination = "splash") {
+        composable("splash") { Splash(navController = navController) }
         composable("mainContent") { MainContent() }
     }
 }
 
 @Composable
-fun NavHostMainContent(){
+fun NavHostMainContent() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "home"){
-        composable("home"){ Home(navController) }
-        composable("details"){ Details(navController) }
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") { Home(navController) }
+        composable("details") { Details(navController) }
     }
 }

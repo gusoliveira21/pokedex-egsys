@@ -4,7 +4,7 @@ import egsys.data.api.RetrofitInicializer
 import egsys.data.api.Service
 import egsys.data.repository.RepositoryImpl
 import egsys.domain.repository.Repository
-import egsys.domain.usecase.base.GetListUseCase
+import egsys.domain.usecase.home.GetListUseCase
 import egsys.pokedex.ui.screens.appArea.home.HomeViewModel
 import egsys.pokedex.ui.screens.appArea.home.HomeViewModelImpl
 import org.koin.androidx.viewmodel.dsl.viewModel

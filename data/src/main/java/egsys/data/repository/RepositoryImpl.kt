@@ -1,6 +1,7 @@
 package egsys.data.repository
 
 import android.content.Context
+import android.util.Log
 import egsys.data.api.Service
 import egsys.data.util.Internet.isOnline
 import egsys.domain.entities.PokemonEntity
@@ -17,7 +18,7 @@ class RepositoryImpl(
             val result = service.getListPokemons().awaitResponse()
 
             val listPokemons: MutableList<PokemonEntity> = mutableListOf()
-
+            //Todo: abstrair logica para outro lugar
             result.body()?.results?.map {
                 val id = it.url.substring(34).trim { it <= '/' }
                 listPokemons.add(
@@ -31,7 +32,7 @@ class RepositoryImpl(
             }
             return listPokemons
         } else {
-            throw Error()
+            throw Error("Erro ao obter dados!")
         }
     }
 
