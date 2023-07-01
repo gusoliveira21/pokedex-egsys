@@ -1,8 +1,5 @@
 package egsys.data.util
 
-import egsys.domain.entities.PokemonEntity
-
-/*
-fun ItemPokemon.toPokemonEntity() = PokemonEntity(
-
-)*/
+fun extractKey(link: String, qntd: Int): Int{
+    return link.substring(qntd).trim { link <= '/'.toString() }.toInt()
+}
