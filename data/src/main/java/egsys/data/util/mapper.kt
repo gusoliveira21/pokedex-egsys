@@ -1,2 +1,0 @@
-package egsys.data.util
-

@@ -13,7 +13,6 @@ import egsys.data.data.DataManager.setOriginalListPokemons
 import egsys.data.data.DataManager.setOriginalListType
 import egsys.data.data.DataManager.setPokemonsDetailsAtList
 import egsys.data.data.DataManager.withoutElementInList
-import egsys.data.model.pokemon.PokemonList
 import egsys.data.util.Internet.isOnline
 import egsys.domain.entities.PokemonDetailEntity
 import egsys.domain.entities.PokemonEntity
@@ -27,21 +26,21 @@ class RepositoryImpl(
 ) : Repository {
 
     override suspend fun getOneRandomPoke(): List<PokemonEntity>? {
-       return  getOriginalListPokemons()
+        return getOriginalListPokemons()
     }
 
     override suspend fun getOnlyOnePoke(nameId: String): PokemonDetailEntity? {
-        try{
+        try {
             if (isOnline(context)) {
-                return if(findPokemonDetailById(nameId.toInt())){
-                     getPokemonDetailById(nameId.toInt())
-                }else{
+                return if (findPokemonDetailById(nameId.toInt())) {
+                    getPokemonDetailById(nameId.toInt())
+                } else {
                     val result = service.getOnlyOnePokemon(nameId).awaitResponse()
                     result.body()?.let { setPokemonsDetailsAtList(it) }
                     getPokemonDetailById(nameId.toInt())
                 }
             }
-        }catch(e:Exception){
+        } catch (e: Exception) {
             Log.e("testar", "exception -> $e")
         }
         throw Error("Erro ao obter dados!")
