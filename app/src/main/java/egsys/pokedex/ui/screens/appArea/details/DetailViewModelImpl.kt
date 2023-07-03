@@ -1,6 +1,5 @@
 package egsys.pokedex.ui.screens.appArea.details
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import egsys.domain.entities.PokemonDetailEntity
 import egsys.domain.usecase.detail.GetOnlyOnePokeUseCase
 import egsys.pokedex.ui.base.ValidationEvent
-import egsys.pokedex.ui.screens.appArea.home.SearchFormState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,8 +42,13 @@ class DetailViewModelImpl(
     }
 
     private fun failure(message: Throwable?) {
-        viewModelScope.launch {
-            validationEventChannel.send(ValidationEvent.Failed)
+        setMessage.value = message?.message
+        if (message is Error) {
+            setMessage.value = message.message.toString()
+            viewModelScope.launch { validationEventChannel.send(ValidationEvent.Failed) }
+        } else {
+            setMessage.value = "Erro desconhecido!"
+            viewModelScope.launch { validationEventChannel.send(ValidationEvent.Failed) }
         }
     }
 

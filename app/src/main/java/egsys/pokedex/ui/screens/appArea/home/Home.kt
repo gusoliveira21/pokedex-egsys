@@ -1,5 +1,6 @@
 package egsys.pokedex.ui.screens.appArea.home
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -23,14 +24,15 @@ fun Home(navController: NavController) {
                 is ValidationEvent.Success -> {
                     listPokemonsState.value = viewModel.resultTakePokemons.value
                     listTypeState.value = viewModel.resultTakeTypes.value
-                    if(viewModel.state.randomSelected){
+                    if (viewModel.state.randomSelected) {
                         navController.navigate("details/${viewModel.state.randomId}")
                         viewModel.state.randomSelected = false
                     }
+                    Toast.makeText(context, viewModel.message.value, Toast.LENGTH_SHORT).show()
                 }
 
                 is ValidationEvent.Failed -> {
-                    //TODO: Ação em caso de falha
+                    Toast.makeText(context, viewModel.message.value, Toast.LENGTH_SHORT).show()
                 }
             }
         }

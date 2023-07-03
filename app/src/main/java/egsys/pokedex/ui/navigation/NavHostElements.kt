@@ -24,8 +24,9 @@ fun NavHostMainContent() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { Home(navController) }
-        composable("details/{param}",
-            arguments = listOf(navArgument("param"){type = NavType.StringType})
+        composable(
+            "details/{param}",
+            arguments = listOf(navArgument("param") { type = NavType.StringType })
         ) { backStackEntry ->
             val param = backStackEntry.arguments?.getString("param")
             Details(navController, param)

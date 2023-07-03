@@ -1,5 +1,6 @@
 package egsys.pokedex.ui.screens.appArea.details
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
@@ -19,11 +20,10 @@ fun Details(navController: NavController, param: String?) {
         viewModel.validationEvents.collect { event ->
             when (event) {
                 is ValidationEvent.Success -> {
-
+                    //TODO: Estrutura basica para uso posterior
                 }
-
                 is ValidationEvent.Failed -> {
-
+                    Toast.makeText(context, viewModel.message.value, Toast.LENGTH_SHORT).show()
                 }
             }
         }

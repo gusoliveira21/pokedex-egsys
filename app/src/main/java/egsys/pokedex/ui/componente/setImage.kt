@@ -20,7 +20,10 @@ fun setImage(
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(image?: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png")
+            .data(
+                image
+                    ?: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png"
+            )
             .crossfade(true)
             .build(),
         contentScale = ContentScale.Crop,

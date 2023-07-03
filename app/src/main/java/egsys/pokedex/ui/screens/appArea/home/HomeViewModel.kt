@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 
-abstract class HomeViewModel: ViewModel() {
-    abstract var state : SearchFormState
-    abstract val message : StateFlow<String?>
+abstract class HomeViewModel : ViewModel() {
+    abstract var state: SearchFormState
+    abstract val message: StateFlow<String?>
 
-    abstract val resultTakePokemons : StateFlow<List<PokemonEntity>?>
-    abstract val resultTakeTypes : StateFlow<List<TypeEntity>?>
+    abstract val resultTakePokemons: StateFlow<List<PokemonEntity>?>
+    abstract val resultTakeTypes: StateFlow<List<TypeEntity>?>
 
     abstract val validationEventChannel: Channel<ValidationEvent>
     open val validationEvents: Flow<ValidationEvent>

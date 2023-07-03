@@ -37,13 +37,16 @@ fun ItemPokemon(
         modifier = Modifier
             .fillMaxWidth(0.5f)
             .padding(8.dp)
-            .background(nameBackground).clickable(onClick = onClick)
+            .background(nameBackground)
+            .clickable(onClick = onClick)
     ) {
         val full = maxWidth
-        Card(modifier = Modifier .fillMaxSize().shadow(10.dp),
+        Card(modifier = Modifier
+            .fillMaxSize()
+            .shadow(10.dp),
             content = {
                 Column {
-                    Row(modifier = Modifier .background(nameBackground)) {
+                    Row(modifier = Modifier.background(nameBackground)) {
                         Card(
                             modifier = Modifier
                                 .size(width = full, height = full / 1.4f),
@@ -71,20 +74,20 @@ fun ItemPokemon(
                     }
                     Row {
 
-                            Box(
+                        Box(
+                            modifier = Modifier
+                                .background(nameBackground)
+                                .fillMaxSize()
+                        ) {
+                            Text(
+                                text = name.uppercase(),
                                 modifier = Modifier
-                                    .background(nameBackground)
-                                    .fillMaxSize()
-                            ) {
-                                Text(
-                                    text = name.uppercase(),
-                                    modifier = Modifier
-                                        .padding(12.dp)
-                                        .fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 18.sp
-                                )
-                            }
+                                    .padding(12.dp)
+                                    .fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                fontSize = 18.sp
+                            )
+                        }
 
                     }
                 }

@@ -43,108 +43,109 @@ fun Screen(
     load: Boolean
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-    if (load) {
-        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-    } else {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = "Detalhes") },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
+        if (load) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text(text = "Detalhes") },
+                        navigationIcon = {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
+                            }
                         }
-                    }
-                )
-            },
-            content = { padding ->
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(60.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    setImage(
-                        image = image,
-                        modifier = Modifier
-                            .size(300.dp)
-                            .align(Alignment.CenterHorizontally)
                     )
+                },
+                content = { padding ->
 
-                    Text(
-                        text = name?.uppercase() ?: "unknown".uppercase(),
-                        textAlign = TextAlign.Center,
-                        fontSize = 22.sp,
-                        fontFamily = FontFamily.SansSerif,
+                    Column(
                         modifier = Modifier
-                            .padding(8.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(CircleShape), shape = RoundedCornerShape(percent = 40)
+                            .fillMaxSize()
+                            .padding(60.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
+                        setImage(
+                            image = image,
+                            modifier = Modifier
+                                .size(300.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+
                         Text(
-                            text = "Weight: " + weight.toString() + "(grams)",
+                            text = name?.uppercase() ?: "unknown".uppercase(),
                             textAlign = TextAlign.Center,
                             fontSize = 22.sp,
-                            fontFamily = FontFamily.SansSerif,
-                            modifier = Modifier
-                                .padding(18.dp)
-                                .align(Alignment.Start)
-                        )
-                    }
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(CircleShape), shape = RoundedCornerShape(percent = 40)
-                    ) {
-                        Text(
-                            text = "Height: " + height.toString() + "(decimeter)",
-                            textAlign = TextAlign.Center,
-                            fontSize = 22.sp,
-                            fontFamily = FontFamily.SansSerif,
-                            modifier = Modifier
-                                .padding(18.dp)
-                                .align(Alignment.Start)
-                        )
-                    }
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(CircleShape), shape = RoundedCornerShape(percent = 40)
-                    ) {
-                        Text(
-                            text = "TYPE",
-                            textAlign = TextAlign.Center,
-                            fontSize = 18.sp,
                             fontFamily = FontFamily.SansSerif,
                             modifier = Modifier
                                 .padding(8.dp)
                                 .align(Alignment.CenterHorizontally)
                         )
-                    }
-                    Row() {
-                        type?.forEach {
-                            Card(modifier = Modifier.padding(start = 8.dp, end = 8.dp)) {
-                                Text(
-                                    text = it,
-                                    fontSize = 15.sp,
-                                    fontFamily = FontFamily.SansSerif,
-                                    modifier = Modifier.padding(start = 8.dp, end = 8.dp)
-                                )
-                            }
 
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(CircleShape), shape = RoundedCornerShape(percent = 40)
+                        ) {
+                            Text(
+                                text = "Weight: " + weight.toString() + "(grams)",
+                                textAlign = TextAlign.Center,
+                                fontSize = 22.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                modifier = Modifier
+                                    .padding(18.dp)
+                                    .align(Alignment.Start)
+                            )
                         }
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(CircleShape), shape = RoundedCornerShape(percent = 40)
+                        ) {
+                            Text(
+                                text = "Height: " + height.toString() + "(decimeter)",
+                                textAlign = TextAlign.Center,
+                                fontSize = 22.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                modifier = Modifier
+                                    .padding(18.dp)
+                                    .align(Alignment.Start)
+                            )
+                        }
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(CircleShape), shape = RoundedCornerShape(percent = 40)
+                        ) {
+                            Text(
+                                text = "TYPE",
+                                textAlign = TextAlign.Center,
+                                fontSize = 18.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .align(Alignment.CenterHorizontally)
+                            )
+                        }
+                        Row() {
+                            type?.forEach {
+                                Card(modifier = Modifier.padding(start = 8.dp, end = 8.dp)) {
+                                    Text(
+                                        text = it,
+                                        fontSize = 15.sp,
+                                        fontFamily = FontFamily.SansSerif,
+                                        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                                    )
+                                }
+
+                            }
+                        }
+
+
                     }
-
-
                 }
-            }
-        )
-    }}
+            )
+        }
+    }
 }
