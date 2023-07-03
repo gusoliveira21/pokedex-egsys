@@ -85,7 +85,6 @@ dependencies {
 
     testImplementation testJunit
     testImplementation testMockk
-    testImplementation testAssertk
     testImplementation testKotlinxCoroutines
     androidTestImplementation androidTestJunit
     androidTestImplementation androidTestExpresso

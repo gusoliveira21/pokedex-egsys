@@ -24,12 +24,6 @@ fun Button2(
     buttonColor: ButtonColors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
     textColor: Color = MaterialTheme.colorScheme.onPrimary
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
         Button(
             onClick = { submit() },
             enabled = enableButton,
@@ -43,5 +37,4 @@ fun Button2(
                 color = textColor
             )
         }
-    }
 }

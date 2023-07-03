@@ -11,6 +11,7 @@ import egsys.domain.usecase.home.GetListOnlyByTypeUseCase
 import egsys.domain.usecase.home.GetListPokemonsUseCase
 import egsys.domain.usecase.home.GetListTypeUseCase
 import egsys.domain.usecase.home.GetListWithNameAndTypeUseCase
+import egsys.domain.usecase.home.GetRandomPokeUseCase
 import egsys.pokedex.ui.base.ValidationEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,8 @@ class HomeViewModelImpl(
     private val getListPokemonsUseCase: GetListPokemonsUseCase,
     private val getListTypeUseCase: GetListTypeUseCase,
     private val getListByType: GetListOnlyByTypeUseCase,
-    private val getListWithNameAndTypeUseCase: GetListWithNameAndTypeUseCase
+    private val getListWithNameAndTypeUseCase: GetListWithNameAndTypeUseCase,
+    private val getRandomPokeUseCase: GetRandomPokeUseCase
 ) : HomeViewModel() {
     //TODO: Mover restante das regras de negócio para domain
     override var state by mutableStateOf(SearchFormState())
@@ -51,21 +53,28 @@ class HomeViewModelImpl(
         }
     }
 
-    private fun successTakePokemons(result: List<PokemonEntity>) {
+    override fun successTakePokemons(result: List<PokemonEntity>) {
         setResultTakePokemons.value = result
         viewModelScope.launch {
             validationEventChannel.send(ValidationEvent.Success)
         }
     }
 
-    private fun successTakeTypes(result: List<TypeEntity>) {
+    override fun successTakeTypes(result: List<TypeEntity>) {
         setResultTakeTypes.value = result
         viewModelScope.launch {
             validationEventChannel.send(ValidationEvent.Success)
         }
     }
 
-    private fun failure(message: Throwable?) {
+    override fun successTakeRandomPoke(result: Int?) {
+        state = state.copy(randomId = result.toString(), randomSelected = true)
+        viewModelScope.launch {
+            validationEventChannel.send(ValidationEvent.Success)
+        }
+    }
+
+    override fun failure(message: Throwable?) {
         setMessage.value = message?.message
         if (message is Error) {
             setMessage.value = message.message.toString()
@@ -121,7 +130,14 @@ class HomeViewModelImpl(
 
     }
 
-    private fun searchItem() {
+    override fun getRandomPokemon() {
+        viewModelScope.launch {
+            val result = getRandomPokeUseCase.execute(null)
+            result.handleResult(::successTakeRandomPoke, ::failure)
+        }
+    }
+
+    override fun searchItem() {
         when {
             !resultTakePokemons.value.isNullOrEmpty() -> {
                 when {
@@ -145,10 +161,11 @@ class HomeViewModelImpl(
         }
     }
 
-    private fun cleanSearchItem() {
+    override fun cleanSearchItem() {
         state = state.copy(reset = true)
         getListPokemons()
     }
+
 
     private fun change(
         searchInput: String? = null,
@@ -169,6 +186,7 @@ class HomeViewModelImpl(
             is SearchFormEvent.SearchButton -> searchItem()
             is SearchFormEvent.ResetChanged -> change(reset = event.reset)
             is SearchFormEvent.CleanSearchButton -> cleanSearchItem()
+            is SearchFormEvent.RandomButton -> getRandomPokemon()
         }
     }
 }

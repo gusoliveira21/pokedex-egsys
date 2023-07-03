@@ -13,14 +13,14 @@ import coil.request.ImageRequest
 @Composable
 fun setImage(
     contentDescription: String? = null,
-    image: String,
+    image: String?,
     modifier: Modifier = Modifier
         .clip(CircleShape)
         .fillMaxSize()
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(image)
+            .data(image?: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png")
             .crossfade(true)
             .build(),
         contentScale = ContentScale.Crop,

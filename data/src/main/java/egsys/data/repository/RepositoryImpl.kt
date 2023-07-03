@@ -4,13 +4,18 @@ import android.content.Context
 import android.util.Log
 import egsys.data.api.Service
 import egsys.data.data.DataManager.addElementInListDetails
+import egsys.data.data.DataManager.findPokemonDetailById
 import egsys.data.data.DataManager.getElementById
 import egsys.data.data.DataManager.getOriginalListPokemons
 import egsys.data.data.DataManager.getOriginalListType
+import egsys.data.data.DataManager.getPokemonDetailById
 import egsys.data.data.DataManager.setOriginalListPokemons
 import egsys.data.data.DataManager.setOriginalListType
+import egsys.data.data.DataManager.setPokemonsDetailsAtList
 import egsys.data.data.DataManager.withoutElementInList
+import egsys.data.model.pokemon.PokemonList
 import egsys.data.util.Internet.isOnline
+import egsys.domain.entities.PokemonDetailEntity
 import egsys.domain.entities.PokemonEntity
 import egsys.domain.entities.TypeEntity
 import egsys.domain.repository.Repository
@@ -20,38 +25,62 @@ class RepositoryImpl(
     private val service: Service,
     private val context: Context
 ) : Repository {
+
+    override suspend fun getOneRandomPoke(): List<PokemonEntity>? {
+       return  getOriginalListPokemons()
+    }
+
+    override suspend fun getOnlyOnePoke(nameId: String): PokemonDetailEntity? {
+        try{
+            if (isOnline(context)) {
+                return if(findPokemonDetailById(nameId.toInt())){
+                     getPokemonDetailById(nameId.toInt())
+                }else{
+                    val result = service.getOnlyOnePokemon(nameId).awaitResponse()
+                    result.body()?.let { setPokemonsDetailsAtList(it) }
+                    getPokemonDetailById(nameId.toInt())
+                }
+            }
+        }catch(e:Exception){
+            Log.e("testar", "exception -> $e")
+        }
+        throw Error("Erro ao obter dados!")
+    }
+
     override suspend fun getListOnlyByType(idType: String): List<PokemonEntity> {
         try {
-            if (withoutElementInList(idType)) {
-                val result = service.getListOnlyByTypes(idType).awaitResponse()
-                val listPokemons = result.body()?.pokemon?.map { pokemon ->
-                    val id = pokemon.pokemon.url.substring(34).trim { it <= '/' }
-                    PokemonEntity(
-                        id = id.toInt(),
-                        name = pokemon.pokemon.name,
-                        image = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png",
-                        details = ""
-                    )
+            if (isOnline(context)) {
+                if (withoutElementInList(idType)) {
+                    val result = service.getListOnlyByTypes(idType).awaitResponse()
+                    val listPokemons = result.body()?.pokemon?.map { pokemon ->
+                        val id = pokemon.pokemon.url.substring(34).trim { it <= '/' }
+                        PokemonEntity(
+                            id = id.toInt(),
+                            name = pokemon.pokemon.name,
+                            image = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png",
+                            details = ""
+                        )
+                    }
+                    result.body()?.let { addElementInListDetails(it) }
+                    return listPokemons ?: emptyList()
+                } else {
+                    val elements = getElementById(idType.toInt())
+                    val listPokemons = elements?.pokemon?.map { element ->
+                        val id = element.pokemon.url.substring(34).trim { it <= '/' }
+                        PokemonEntity(
+                            id = id.toInt(),
+                            name = element.pokemon.name,
+                            image = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png",
+                            details = ""
+                        )
+                    }
+                    return listPokemons ?: emptyList()
                 }
-                result.body()?.let { addElementInListDetails(it) }
-                return listPokemons ?: emptyList()
-            } else {
-                val elements = getElementById(idType.toInt())
-                val listPokemons = elements?.pokemon?.map { element ->
-                    val id = element.pokemon.url.substring(34).trim { it <= '/' }
-                    PokemonEntity(
-                        id = id.toInt(),
-                        name = element.pokemon.name,
-                        image = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png",
-                        details = ""
-                    )
-                }
-                return listPokemons ?: emptyList()
             }
         } catch (e: Exception) {
             Log.e("testar", "getListOnlyByType: $e")
         }
-        return emptyList()
+        throw Error("Erro ao obter dados!")
     }
 
     override suspend fun getListPokemons(): List<PokemonEntity> {

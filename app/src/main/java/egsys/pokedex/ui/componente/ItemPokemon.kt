@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,11 +40,10 @@ fun ItemPokemon(
             .background(nameBackground).clickable(onClick = onClick)
     ) {
         val full = maxWidth
-        Card(modifier = Modifier
-            .fillMaxSize(),
+        Card(modifier = Modifier .fillMaxSize().shadow(10.dp),
             content = {
                 Column {
-                    Row {
+                    Row(modifier = Modifier .background(nameBackground)) {
                         Card(
                             modifier = Modifier
                                 .size(width = full, height = full / 1.4f),
@@ -70,7 +70,7 @@ fun ItemPokemon(
                         }
                     }
                     Row {
-                        Card(modifier = Modifier.size(width = full, height = full / 4f)) {
+
                             Box(
                                 modifier = Modifier
                                     .background(nameBackground)
@@ -85,7 +85,7 @@ fun ItemPokemon(
                                     fontSize = 18.sp
                                 )
                             }
-                        }
+
                     }
                 }
             })

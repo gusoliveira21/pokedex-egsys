@@ -23,6 +23,10 @@ fun Home(navController: NavController) {
                 is ValidationEvent.Success -> {
                     listPokemonsState.value = viewModel.resultTakePokemons.value
                     listTypeState.value = viewModel.resultTakeTypes.value
+                    if(viewModel.state.randomSelected){
+                        navController.navigate("details/${viewModel.state.randomId}")
+                        viewModel.state.randomSelected = false
+                    }
                 }
 
                 is ValidationEvent.Failed -> {

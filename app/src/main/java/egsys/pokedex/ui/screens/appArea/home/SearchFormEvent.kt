@@ -6,4 +6,5 @@ sealed class SearchFormEvent{
     data class ResetChanged(val reset: Boolean): SearchFormEvent()
     object SearchButton : SearchFormEvent()
     object CleanSearchButton : SearchFormEvent()
+    object RandomButton : SearchFormEvent()
 }

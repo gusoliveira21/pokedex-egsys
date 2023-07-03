@@ -2,6 +2,7 @@ package egsys.data.api
 
 import egsys.data.model.detailsType.DetailsType
 import egsys.data.model.pokemon.PokemonList
+import egsys.data.model.pokemonDetails.PokemonDetails
 import egsys.data.model.type.TypeList
 import retrofit2.Call
 import retrofit2.http.GET
@@ -16,4 +17,7 @@ interface Service {
 
     @GET("api/v2/type/{typeId}")
     fun getListOnlyByTypes(@Path("typeId") typeId: String): Call<DetailsType>
+
+    @GET("api/v2/pokemon/{id}")
+    fun getOnlyOnePokemon(@Path("id") id: String): Call<PokemonDetails>
 }

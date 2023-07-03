@@ -21,8 +21,19 @@ abstract class HomeViewModel: ViewModel() {
         get() = validationEventChannel.receiveAsFlow()
 
     abstract fun onEvent(event: SearchFormEvent)
+
     abstract fun getListPokemons()
     abstract fun getListType()
     abstract fun getListOnlyByType()
     abstract fun getListByTypeAndName()
+    abstract fun getRandomPokemon()
+
+    abstract fun searchItem()
+    abstract fun cleanSearchItem()
+
+    abstract fun successTakePokemons(result: List<PokemonEntity>)
+    abstract fun successTakeTypes(result: List<TypeEntity>)
+    abstract fun successTakeRandomPoke(result: Int?)
+
+    abstract fun failure(message: Throwable?)
 }
