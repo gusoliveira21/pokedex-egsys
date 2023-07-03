@@ -31,5 +31,10 @@ fun Home(navController: NavController) {
             }
         }
     }
-    Screen(listPokemons = listPokemonsState.value, listType = listTypeState.value)
+    Screen(
+        listPokemons = listPokemonsState.value,
+        listType = listTypeState.value,
+        viewModel = viewModel,
+        navController = navController
+    )
 }

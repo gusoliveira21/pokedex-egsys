@@ -1,6 +1,5 @@
 package egsys.pokedex.ui.componente
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
@@ -15,16 +14,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import egsys.domain.entities.TypeEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownListType(list: List<TypeEntity>) {
-    val context = LocalContext.current
+fun DropdownListType(
+    list: List<TypeEntity>,
+    onEvent: (String) -> Unit,
+    nameShow: String = "Type selected",
+    resetAction: Boolean = false,
+    onEventReset: (Boolean) -> Unit,
+) {
     val nameList = list.map { it.name }
-    var selectedText by remember { mutableStateOf(nameList[0]) }
+    var selectedText by remember { mutableStateOf(nameShow) }
     var expanded by remember { mutableStateOf(false) }
+    var reset by remember { mutableStateOf(false) }
+
+    if (resetAction) {
+        selectedText = nameShow
+        expanded = false
+        onEventReset(true)
+        reset = false
+    }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         ExposedDropdownMenuBox(
@@ -53,7 +64,7 @@ fun DropdownListType(list: List<TypeEntity>) {
                         onClick = {
                             selectedText = item
                             expanded = false
-                            Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+                            onEvent(item)
                         }
                     )
                 }

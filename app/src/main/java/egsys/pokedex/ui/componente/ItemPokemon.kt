@@ -1,6 +1,7 @@
 package egsys.pokedex.ui.componente
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,7 @@ fun ItemPokemon(
         modifier = Modifier
             .fillMaxWidth(0.5f)
             .padding(8.dp)
-            .background(nameBackground)
+            .background(nameBackground).clickable(onClick = onClick)
     ) {
         val full = maxWidth
         Card(modifier = Modifier

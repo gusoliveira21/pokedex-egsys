@@ -6,4 +6,5 @@ import egsys.domain.entities.TypeEntity
 interface Repository {
     suspend fun getListPokemons() : List<PokemonEntity>
     suspend fun getListType() : List<TypeEntity>
+    suspend fun getListOnlyByType(idType: String) : List<PokemonEntity>
 }

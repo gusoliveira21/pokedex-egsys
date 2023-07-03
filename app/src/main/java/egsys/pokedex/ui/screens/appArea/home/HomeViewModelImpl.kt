@@ -1,10 +1,16 @@
 package egsys.pokedex.ui.screens.appArea.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import egsys.domain.entities.PokemonEntity
+import egsys.domain.entities.SearchEntity
 import egsys.domain.entities.TypeEntity
-import egsys.domain.usecase.home.GetListTypeUseCase
+import egsys.domain.usecase.home.GetListOnlyByTypeUseCase
 import egsys.domain.usecase.home.GetListPokemonsUseCase
+import egsys.domain.usecase.home.GetListTypeUseCase
+import egsys.domain.usecase.home.GetListWithNameAndTypeUseCase
 import egsys.pokedex.ui.base.ValidationEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +21,11 @@ import kotlinx.coroutines.launch
 class HomeViewModelImpl(
     private val getListPokemonsUseCase: GetListPokemonsUseCase,
     private val getListTypeUseCase: GetListTypeUseCase,
-    ) : HomeViewModel() {
-
+    private val getListByType: GetListOnlyByTypeUseCase,
+    private val getListWithNameAndTypeUseCase: GetListWithNameAndTypeUseCase
+) : HomeViewModel() {
+    //TODO: Mover restante das regras de negócio para domain
+    override var state by mutableStateOf(SearchFormState())
     override val validationEventChannel = Channel<ValidationEvent>()
     override val validationEvents = validationEventChannel.receiveAsFlow()
 
@@ -26,7 +35,8 @@ class HomeViewModelImpl(
 
     override val resultTakePokemons: StateFlow<List<PokemonEntity>?>
         get() = setResultTakePokemons
-    private var setResultTakePokemons: MutableStateFlow<List<PokemonEntity>?> = MutableStateFlow(null)
+    private var setResultTakePokemons: MutableStateFlow<List<PokemonEntity>?> =
+        MutableStateFlow(null)
 
     override val resultTakeTypes: StateFlow<List<TypeEntity>?>
         get() = setResultTakeTypes
@@ -36,12 +46,9 @@ class HomeViewModelImpl(
         viewModelScope.launch {
             if (resultTakePokemons.value.isNullOrEmpty()) getListPokemons()
             else successTakePokemons(resultTakePokemons.value!!)
+            if (resultTakeTypes.value.isNullOrEmpty()) getListType()
+            else successTakeTypes(resultTakeTypes.value!!)
         }
-
-
-        if(resultTakeTypes.value.isNullOrEmpty()) getListType()
-        else successTakeTypes(resultTakeTypes.value!!)
-
     }
 
     private fun successTakePokemons(result: List<PokemonEntity>) {
@@ -51,12 +58,13 @@ class HomeViewModelImpl(
         }
     }
 
-    private fun successTakeTypes(result: List<TypeEntity>){
+    private fun successTakeTypes(result: List<TypeEntity>) {
         setResultTakeTypes.value = result
         viewModelScope.launch {
             validationEventChannel.send(ValidationEvent.Success)
         }
     }
+
     private fun failure(message: Throwable?) {
         setMessage.value = message?.message
         if (message is Error) {
@@ -74,11 +82,93 @@ class HomeViewModelImpl(
             result.handleResult(::successTakeTypes, ::failure)
         }
     }
+
     override fun getListPokemons() {
         viewModelScope.launch {
             val result = getListPokemonsUseCase.execute(null)
             result.handleResult(::successTakePokemons, ::failure)
         }
 
+    }
+
+    override fun getListOnlyByType() {
+        val idType =
+            resultTakeTypes.value!!.filter { type -> type.name.equals(state.searchDropDown) }
+        viewModelScope.launch {
+            if (idType[0].id != null) {
+                val result = getListByType.execute(idType[0].id.toString())
+                result.handleResult(::successTakePokemons, ::failure)
+            }
+        }
+    }
+
+    override fun getListByTypeAndName() {
+        val idType =
+            resultTakeTypes.value!!.filter { type -> type.name.equals(state.searchDropDown) }
+        viewModelScope.launch {
+            if (idType[0].id != null) {
+                val result = getListWithNameAndTypeUseCase.execute(
+                    listOf(
+                        SearchEntity(
+                            id = idType[0].id.toString(),
+                            name = state.searchInput.uppercase()
+                        )
+                    )
+                )
+                result.handleResult(::successTakePokemons, ::failure)
+            }
+        }
+
+    }
+
+    private fun searchItem() {
+        when {
+            !resultTakePokemons.value.isNullOrEmpty() -> {
+                when {
+                    state.searchInput.isNotEmpty() && state.searchDropDown.isNotEmpty() -> getListByTypeAndName()
+                    state.searchInput.isEmpty() && state.searchDropDown.isNotEmpty() -> getListOnlyByType()
+                    state.searchInput.isNotEmpty() && state.searchDropDown.isEmpty() -> {
+                        val (filterResult, rest) = resultTakePokemons.value!!.partition { pokemon ->
+                            pokemon.name.startsWith(
+                                state.searchInput.uppercase(),
+                                ignoreCase = true
+                            )
+                        }
+                        successTakePokemons(filterResult + rest)
+                    }
+
+                    else -> getListPokemons()
+                }
+            }
+
+            else -> getListPokemons()
+        }
+    }
+
+    private fun cleanSearchItem() {
+        state = state.copy(reset = true)
+        getListPokemons()
+    }
+
+    private fun change(
+        searchInput: String? = null,
+        searchDropDown: String? = null,
+        reset: Boolean = false,
+    ) {
+        when {
+            searchInput != null -> state = state.copy(searchInput = searchInput)
+            searchDropDown != null -> state = state.copy(searchDropDown = searchDropDown)
+            reset -> state = state.copy(reset = !reset, searchInput = "")
+        }
+    }
+
+    override fun onEvent(event: SearchFormEvent) {
+        when (event) {
+            is SearchFormEvent.SearchInputChanged -> change(searchInput = event.name)
+            is SearchFormEvent.SearchDropDownMenuChanged -> change(searchDropDown = event.idType)
+            is SearchFormEvent.SearchButton -> searchItem()
+            is SearchFormEvent.ResetChanged -> change(reset = event.reset)
+            is SearchFormEvent.CleanSearchButton -> cleanSearchItem()
+        }
     }
 }

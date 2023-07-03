@@ -1,5 +1,6 @@
 package egsys.pokedex.ui.screens.appArea.home.componente
 
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,22 +12,26 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import egsys.domain.entities.PokemonEntity
 import egsys.domain.entities.TypeEntity
 import egsys.pokedex.ui.componente.Button2
 import egsys.pokedex.ui.componente.DropdownListType
 import egsys.pokedex.ui.componente.InputText
 import egsys.pokedex.ui.componente.ItemPokemon
+import egsys.pokedex.ui.screens.appArea.home.HomeViewModel
+import egsys.pokedex.ui.screens.appArea.home.SearchFormEvent
 
 @Composable
-fun Screen(listPokemons: List<PokemonEntity>?, listType: List<TypeEntity>?) {
-    var selectedIndex = remember { mutableStateOf(-1) }
-
+fun Screen(
+    listPokemons: List<PokemonEntity>?,
+    listType: List<TypeEntity>?,
+    viewModel: HomeViewModel,
+    navController: NavController
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (listPokemons == null) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -39,10 +44,16 @@ fun Screen(listPokemons: List<PokemonEntity>?, listType: List<TypeEntity>?) {
                 ) {
                     InputText(
                         textTop = "Search",
-                        textValue = "",
+                        textValue = viewModel.state.searchInput,
                         textHint = "eg: Bulbasaur",
                         textError = listOf(),
-                        onEvent = {}
+                        onEvent = { it: String ->
+                            viewModel.onEvent(
+                                SearchFormEvent.SearchInputChanged(
+                                    it
+                                )
+                            )
+                        }
                     )
                 }
                 Row(
@@ -50,7 +61,26 @@ fun Screen(listPokemons: List<PokemonEntity>?, listType: List<TypeEntity>?) {
                         .fillMaxWidth()
                         .padding(16.dp)
                 )
-                { if (!listType.isNullOrEmpty()) DropdownListType(list = listType) }
+                {
+                    if (!listType.isNullOrEmpty())
+                        DropdownListType(
+                            list = listType,
+                            onEvent = { it: String ->
+                                viewModel.onEvent(
+                                    SearchFormEvent.SearchDropDownMenuChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            resetAction = viewModel.state.reset,
+                            onEventReset = { it: Boolean ->
+                                viewModel.onEvent(
+                                    SearchFormEvent.ResetChanged(it)
+                                )
+                            }
+                        )
+
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -58,8 +88,21 @@ fun Screen(listPokemons: List<PokemonEntity>?, listType: List<TypeEntity>?) {
                 ) {
                     Button2(
                         text = "Search",
-                        submit = { /*TODO*/ },
-                        enableButton = true
+                        submit = { viewModel.onEvent(SearchFormEvent.SearchButton) },
+                        enableButton = true,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Button2(
+                        text = "Clean Filter",
+                        submit = { viewModel.onEvent(SearchFormEvent.CleanSearchButton) },
+                        enableButton = true,
+                        modifier = Modifier.weight(1f),
                     )
                 }
                 Row {
