@@ -28,11 +28,9 @@ fun Home(navController: NavController) {
                         navController.navigate("details/${viewModel.state.randomId}")
                         viewModel.state.randomSelected = false
                     }
-                    Toast.makeText(context, viewModel.message.value, Toast.LENGTH_SHORT).show()
                 }
-
                 is ValidationEvent.Failed -> {
-                    Toast.makeText(context, viewModel.message.value, Toast.LENGTH_SHORT).show()
+                    //TODO: Ação em caso de falha
                 }
             }
         }

@@ -23,7 +23,8 @@ fun Details(navController: NavController, param: String?) {
                     //TODO: Estrutura basica para uso posterior
                 }
                 is ValidationEvent.Failed -> {
-                    Toast.makeText(context, viewModel.message.value, Toast.LENGTH_SHORT).show()
+                    //TODO: Ação em caso de falha
+
                 }
             }
         }
