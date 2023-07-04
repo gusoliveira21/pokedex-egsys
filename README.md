@@ -35,4 +35,12 @@
 - Pesquisar por um Pokémon a partir do seu nome
 - Botão Random que exibe os detalhes de um Pokémon aleatório
 
+### 🛠️ Abrir e rodar o projeto
+## Pela APK:
+- Acesse o link a baixo.
+- Baixe o apk para seu aparelho.
+- Instale o apk.
+https://github.com/gusoliveira21/pokedex-egsys/blob/release/app/release/app-release.apk
 
+## Pelo Android Studio:
+Baixe o projeto e o importe para o android studio. As bibliotecas serão baixadas automaticamente e logo após isso sera possivel modificar o mesmo.
